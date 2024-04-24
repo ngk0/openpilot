@@ -2,7 +2,7 @@
 from cereal import car
 from panda import Panda
 from openpilot.selfdrive.car import get_safety_config
-from openpilot.selfdrive.car.chrysler.values import CAR, DBC, RAM_HD, RAM_DT, RAM_CARS, ChryslerFlags
+from openpilot.selfdrive.car.chrysler.values import CAR, RAM_HD, RAM_DT, RAM_CARS, CUSW_CARS, ChryslerFlags
 from openpilot.selfdrive.car.interfaces import CarInterfaceBase
 from common.params import Params
 
@@ -20,11 +20,19 @@ class CarInterface(CarInterfaceBase):
     ret.steerLimitTimer = 0.4
 
     # safety config
-    ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chrysler)]
-    if candidate in RAM_HD:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_HD
-    elif candidate in RAM_DT:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_DT
+    if candidate in CUSW_CARS:
+      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chryslerCusw)]
+    else:
+      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chrysler)]
+      if candidate in RAM_HD:
+        ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_HD
+      elif candidate in RAM_DT:
+        ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_DT
+
+      ret.minSteerSpeed = 3.8  # m/s
+      CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
+
+    if candidate not in (RAM_CARS, CUSW_CARS):
 
     ret.minSteerSpeed = 3.8  # m/s
     CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
@@ -78,7 +86,19 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 3405.
       ret.minSteerSpeed = 16
       CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning, 1.0, False)
+      
+    elif candidate == CAR.JEEP_CHEROKEE_MK5:
+      ret.mass = 1747
+      ret.wheelbase = 2.70
+      ret.steerRatio = 17  # TODO: verify against params learner
+      ret.minSteerSpeed = 18.5  # TODO: conservative, need to test
+      ret.steerActuatorDelay = 0.15
+      ret.lateralTuning.init('pid')
+      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.15, 0.30], [0.03, 0.05]]
+      ret.lateralTuning.pid.kf = 0.0002
 
+    
     else:
       raise ValueError(f"Unsupported car: {candidate}")
 
