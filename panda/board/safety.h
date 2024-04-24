@@ -53,6 +53,7 @@
 #define SAFETY_BODY 27U
 #define SAFETY_HYUNDAI_CANFD 28U
 #define SAFETY_CHRYSLER_CUSW 30U
+
 uint16_t current_safety_mode = SAFETY_SILENT;
 uint16_t current_safety_param = 0;
 const safety_hooks *current_hooks = &nooutput_hooks;
@@ -264,14 +265,13 @@ void generic_rx_checks(bool stock_ecu_detected) {
   gas_pressed_prev = gas_pressed;
 
   // exit controls on rising edge of brake press
-  // only if vehicle is not stopped.
-  if (brake_pressed && !brake_pressed_prev && vehicle_moving) {
+  if (brake_pressed && (!brake_pressed_prev || vehicle_moving)) {
     controls_allowed = false;
   }
   brake_pressed_prev = brake_pressed;
 
   // exit controls on rising edge of regen paddle
-  if (regen_braking && (!regen_braking_prev && vehicle_moving)) {
+  if (regen_braking && (!regen_braking_prev || vehicle_moving)) {
     controls_allowed = false;
   }
   regen_braking_prev = regen_braking;
@@ -318,8 +318,8 @@ const safety_hook_config safety_hook_registry[] = {
   {SAFETY_HYUNDAI_CANFD, &hyundai_canfd_hooks},
 #endif
 #ifdef ALLOW_DEBUG
-  {SAFETY_TESLA, &tesla_hooks},
   {SAFETY_CHRYSLER_CUSW, &chrysler_cusw_hooks},
+  {SAFETY_TESLA, &tesla_hooks},
   {SAFETY_SUBARU_PREGLOBAL, &subaru_preglobal_hooks},
   {SAFETY_VOLKSWAGEN_PQ, &volkswagen_pq_hooks},
   {SAFETY_ALLOUTPUT, &alloutput_hooks},
@@ -691,7 +691,7 @@ bool steer_angle_cmd_checks(int desired_angle, bool steer_control_enabled, const
 void pcm_cruise_check(bool cruise_engaged) {
   // Enter controls on rising edge of stock ACC, exit controls if stock ACC disengages
   if (!cruise_engaged) {
-    controls_allowed = !vehicle_moving;
+    controls_allowed = false;
   }
   if (cruise_engaged && !cruise_engaged_prev) {
     controls_allowed = true;
