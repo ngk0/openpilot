@@ -10,6 +10,7 @@
 #include "safety/safety_ford.h"
 #include "safety/safety_hyundai.h"
 #include "safety/safety_chrysler.h"
+#include "safety/safety_chrysler_cusw.h"
 #include "safety/safety_subaru.h"
 #include "safety/safety_subaru_preglobal.h"
 #include "safety/safety_mazda.h"
@@ -51,7 +52,7 @@
 #define SAFETY_FAW 26U
 #define SAFETY_BODY 27U
 #define SAFETY_HYUNDAI_CANFD 28U
-
+#define SAFETY_CHRYSLER_CUSW 30U
 uint16_t current_safety_mode = SAFETY_SILENT;
 uint16_t current_safety_param = 0;
 const safety_hooks *current_hooks = &nooutput_hooks;
@@ -318,6 +319,7 @@ const safety_hook_config safety_hook_registry[] = {
 #endif
 #ifdef ALLOW_DEBUG
   {SAFETY_TESLA, &tesla_hooks},
+  {SAFETY_CHRYSLER_CUSW, &chrysler_cusw_hooks},
   {SAFETY_SUBARU_PREGLOBAL, &subaru_preglobal_hooks},
   {SAFETY_VOLKSWAGEN_PQ, &volkswagen_pq_hooks},
   {SAFETY_ALLOUTPUT, &alloutput_hooks},
