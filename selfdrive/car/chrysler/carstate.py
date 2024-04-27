@@ -233,6 +233,7 @@ class CarState(CarStateBase):
       ("ORC_1", 2),
       ("BCM_1", 1),
       ("ESP_8", 50),
+      ("LKAS_HEARTBIT", 50), #JVE Pilot
       ("ECM_2", 50),
       ("TRACTION_BUTTON", 1),
     ]
