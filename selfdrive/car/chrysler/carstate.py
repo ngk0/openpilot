@@ -271,6 +271,7 @@ class CarState(CarStateBase):
       ("STEERING", 100),
       ("STEERING_LEVERS", 10),
       ("TRACTION_BUTTON", 50),
+      ("LKAS_HEARTBIT", 50),  #JVEPilot
       ("WHEEL_SPEEDS_FRONT", 50),
       ("WHEEL_SPEEDS_REAR", 50),
     ]
