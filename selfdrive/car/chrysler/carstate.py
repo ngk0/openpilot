@@ -136,6 +136,9 @@ class CarState(CarStateBase):
   def update_cusw(self, cp, cp_cam):
     ret = car.CarState.new_message()
 
+    # JVE Pilot 
+    self.lkasHeartbit = cp_cam.vl["LKAS_HEARTBIT"]
+    
     ret.doorOpen = any([cp.vl["DOORS"]["DOOR_OPEN_FL"],
                         cp.vl["DOORS"]["DOOR_OPEN_FR"],
                         cp.vl["DOORS"]["DOOR_OPEN_RL"],
