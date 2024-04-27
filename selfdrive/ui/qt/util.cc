@@ -26,7 +26,7 @@ QString getVersion() {
 }
 
 QString getBrand() {
-  return QObject::tr("jvePilot");
+  return QObject::tr("jvePilot-kl");
 }
 
 QString getUserAgent() {
