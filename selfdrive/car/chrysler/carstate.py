@@ -97,7 +97,7 @@ class CarState(CarStateBase):
     ret.cruiseState.nonAdaptive = cp_cruise.vl["DAS_4"]["ACC_STATE"] in (1, 2)  # 1 NormalCCOn and 2 NormalCCSet
     ret.cruiseState.standstill = cp_cruise.vl["DAS_3"]["ACC_STANDSTILL"] == 1
     ret.accFaulted = cp_cruise.vl["DAS_3"]["ACC_FAULTED"] != 0
-    self.lkasHeartbit = cp_cam.vl["LKAS_HEARTBIT"]
+    #self.lkasHeartbit = cp_cam.vl["LKAS_HEARTBIT"]
 
     if self.CP.carFingerprint in RAM_CARS:
       # Auto High Beam isn't Located in this message on chrysler or jeep currently located in 729 message
@@ -292,10 +292,10 @@ class CarState(CarStateBase):
       messages += CarState.get_cruise_messages()
     else:
       # LKAS_HEARTBIT data needs to be forwarded!
-      forward_lkas_heartbit_messages = [
-        ("LKAS_HEARTBIT", 10),
-      ]
-      messages += forward_lkas_heartbit_messages
+      #forward_lkas_heartbit_messages = [
+      #  ("LKAS_HEARTBIT", 10),
+      #]
+      #messages += forward_lkas_heartbit_messages
 
     return CANParser(DBC[CP.carFingerprint]["pt"], messages, 2)
 
