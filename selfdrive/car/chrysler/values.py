@@ -12,7 +12,7 @@ Ecu = car.CarParams.Ecu
 
 
 class ChryslerFlags(IntFlag):
-  HIGHER_MIN_STEERING_SPEED = 1
+  HIGHER_MIN_STEERING_SPEED = 0
 
 
 class CAR(StrEnum):
