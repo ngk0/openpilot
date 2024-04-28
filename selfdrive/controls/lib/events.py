@@ -18,7 +18,7 @@ VisualAlert = car.CarControl.HUDControl.VisualAlert
 AudibleAlert = car.CarControl.HUDControl.AudibleAlert
 EventName = car.CarEvent.EventName
 
-#cachedParams = CachedParams()
+cachedParams = CachedParams()
 
 # Alert priorities
 class Priority(IntEnum):
