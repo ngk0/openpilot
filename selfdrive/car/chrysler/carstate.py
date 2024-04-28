@@ -137,7 +137,7 @@ class CarState(CarStateBase):
     ret = car.CarState.new_message()
 
     # JVE Pilot 
-    #self.lkasHeartbit = cp.vl["LKAS_HEARTBIT"]
+    self.lkasHeartbit = cp_cam.vl["LKAS_HEARTBIT"]
     
     ret.doorOpen = any([cp.vl["DOORS"]["DOOR_OPEN_FL"],
                         cp.vl["DOORS"]["DOOR_OPEN_FR"],
