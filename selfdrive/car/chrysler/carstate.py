@@ -137,7 +137,7 @@ class CarState(CarStateBase):
     ret = car.CarState.new_message()
 
     # JVE Pilot 
-    self.lkasHeartbit = cp_cam.vl["LKAS_HEARTBIT"]
+    #self.lkasHeartbit = cp_cam.vl["LKAS_HEARTBIT"]
     
     ret.doorOpen = any([cp.vl["DOORS"]["DOOR_OPEN_FL"],
                         cp.vl["DOORS"]["DOOR_OPEN_FR"],
@@ -233,7 +233,7 @@ class CarState(CarStateBase):
       ("ORC_1", 2),
       ("BCM_1", 1),
       ("ESP_8", 50),
-      ("LKAS_HEARTBIT", 50), #JVE Pilot
+    #  ("LKAS_HEARTBIT", 50), #JVE Pilot
       ("ECM_2", 50),
       ("TRACTION_BUTTON", 1),
     ]
@@ -271,7 +271,7 @@ class CarState(CarStateBase):
       ("STEERING", 100),
       ("STEERING_LEVERS", 10),
       ("TRACTION_BUTTON", 50),
-      ("LKAS_HEARTBIT", 50),  #JVEPilot
+    #  ("LKAS_HEARTBIT", 50),  #JVEPilot
       ("WHEEL_SPEEDS_FRONT", 50),
       ("WHEEL_SPEEDS_REAR", 50),
     ]
