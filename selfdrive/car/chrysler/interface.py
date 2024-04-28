@@ -87,8 +87,8 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1747
       ret.wheelbase = 2.70
       ret.steerRatio = 17  # TODO: verify against params learner
-      ret.minSteerSpeed = 18.5  # TODO: conservative, need to test
-      ret.steerActuatorDelay = 0.15
+      ret.minSteerSpeed = 14  # TODO: conservative, need to test
+      ret.steerActuatorDelay = 0.11
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.15, 0.30], [0.03, 0.05]]
