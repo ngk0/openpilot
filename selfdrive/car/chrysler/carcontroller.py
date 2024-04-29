@@ -23,6 +23,7 @@ class CarController:
   def __init__(self, dbc_name, CP, VM):
     self.CP = CP
     self.apply_steer_last = 0
+    self.apply_steer = 0
     self.frame = 0
 
     self.hud_count = 0
