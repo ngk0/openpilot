@@ -110,12 +110,12 @@ class CarController:
       self.lkas_control_bit_prev = lkas_control_bit
 
     # steer torque
-      new_steer = int(round(CC.actuators.steer * self.params.STEER_MAX))
-      apply_steer = apply_meas_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorqueEps, self.params)
+    new_steer = int(round(CC.actuators.steer * self.params.STEER_MAX))
+    apply_steer = apply_meas_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorqueEps, self.params)
       # CUSW doesn't like being slammed down to zero on disengage, allow torque to fall at MAX_RATE_DOWN
-      if (self.CP.carFingerprint not in CUSW_CARS and not lkas_active) or not lkas_control_bit:
-        apply_steer = 0
-      self.apply_steer_last = apply_steer
+    if (self.CP.carFingerprint not in CUSW_CARS and not lkas_active) or not lkas_control_bit:
+      apply_steer = 0
+    self.apply_steer_last = apply_steer
 
     can_sends.append(chryslercan.create_lkas_command(self.packer, self.CP, int(apply_steer), lkas_control_bit))
 
