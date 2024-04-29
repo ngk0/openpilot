@@ -27,6 +27,7 @@ class CarController:
 
     self.hud_count = 0
     self.next_lkas_control_change = 0
+    self.last_lkas_falling_edge = 0
     self.lkas_control_bit_prev = False
     self.last_button_frame = 0
 
