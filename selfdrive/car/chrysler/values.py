@@ -12,7 +12,7 @@ Ecu = car.CarParams.Ecu
 
 class ChryslerFlags(IntFlag):
   # Detected flags
-  HIGHER_MIN_STEERING_SPEED = 1
+  HIGHER_MIN_STEERING_SPEED = 0
 
 @dataclass
 class ChryslerCarDocs(CarDocs):
@@ -65,7 +65,7 @@ class CAR(Platforms):
   # Jeep
   JEEP_CHEROKEE_5TH_GEN = ChryslerPlatformConfig(
     [ChryslerCarDocs("Jeep Cherokee 2019-23")],
-    ChryslerCarSpecs(mass=1747., wheelbase=2.70, steerRatio=17.0, minSteerSpeed=18.5),
+    ChryslerCarSpecs(mass=1747., wheelbase=2.70, steerRatio=17.0, minSteerSpeed=14),
     dbc_dict('chrysler_cusw', None),
   )
   JEEP_GRAND_CHEROKEE = ChryslerPlatformConfig(  # includes 2017 Trailhawk
