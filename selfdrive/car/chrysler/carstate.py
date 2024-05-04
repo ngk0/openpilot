@@ -300,8 +300,8 @@ class CarState(CarStateBase):
     ]
 
     if CP.enableBsm:
-      messages.append(("BSM_LEFT, 2))
-      messages.append(("BSM_RIGHT, 2))
+      messages.append(("BSM_LEFT", 2))
+      messages.append(("BSM_RIGHT", 2))
 
     if CP.carFingerprint in RAM_CARS:
       messages += [
