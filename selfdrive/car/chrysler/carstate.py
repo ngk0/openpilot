@@ -221,7 +221,6 @@ class CarState(CarStateBase):
 
       if not pressed_changed:
         be.pressedFrames += 1
-
       button_events.append(be)
 
   def button_pressed(self, button_type, pressed=True):
