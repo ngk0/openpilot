@@ -136,6 +136,8 @@ class CarState(CarStateBase):
   def update_cusw(self, cp, cp_cam):
     ret = car.CarState.new_message()
 
+  
+
     # JVE Pilot 
     #self.lkasHeartbit = cp_cam.vl["LKAS_HEARTBIT"]
     
@@ -176,7 +178,29 @@ class CarState(CarStateBase):
     ret.steeringTorque = cp.vl["EPS_STATUS"]["TORQUE_DRIVER"]
     ret.steeringTorqueEps = cp.vl["EPS_STATUS"]["TORQUE_MOTOR"]
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
-    ret.steerFaultPermanent = bool(cp.vl["EPS_STATUS"]["LKAS_FAULT"])
+    #ret.steerFaultPermanent = bool(cp.vl["EPS_STATUS"]["LKAS_FAULT"])
+
+    #ret.steerFaultTemporary = cp.vl["EPS_2"]["LKAS_TEMPORARY_FAULT"] == 1
+    ret.steerFaultPermanent = cp.vl["EPS_2"]["LKAS_STATE"] == 4
+
+    # blindspot sensors
+    if self.CP.enableBsm:
+      ret.leftBlindspot = cp.vl["BSM_LEFT"]["LEFT_DETECTED"] == 1
+      ret.rightBlindspot = cp.vl["BSM_RIGHT"]["RIGHT_DETECTED"] == 1
+
+    self.lkas_car_model = cp_cam.vl["DAS_6"]["CAR_MODEL"]
+    self.button_counter = cp.vl["CRUISE_BUTTONS"]["COUNTER"]
+
+    brake = cp.vl["ESP_8"]["BRK_PRESSURE"]
+    gas = cp.vl["ECM_2"]["ACCEL"]
+    if gas > 0:
+      ret.jvePilotCarState.pedalPressedAmount = float(np.interp(gas, PEDAL_GAS_PRESSED_XP, PEDAL_PRESSED_YP)) / 256
+    elif brake > 0:
+      ret.jvePilotCarState.pedalPressedAmount = float(np.interp(brake / 16, PEDAL_BRAKE_PRESSED_XP, PEDAL_PRESSED_YP)) / -256
+    else:
+      ret.jvePilotCarState.pedalPressedAmount = 0
+
+    ret.jvePilotCarState.accFollowDistance = int(min(3, max(0, cp.vl["DAS_4"]['ACC_DISTANCE_CONFIG_2'])))
 
     return ret  
   
@@ -275,6 +299,22 @@ class CarState(CarStateBase):
       ("WHEEL_SPEEDS_FRONT", 50),
       ("WHEEL_SPEEDS_REAR", 50),
     ]
+
+    if CP.enableBsm:
+      messages.append(("BSM_LEFT, 2))
+      messages.append(("BSM_RIGHT, 2))
+
+    if CP.carFingerprint in RAM_CARS:
+      messages += [
+        ("EPS_3", 50),
+        ("Transmission_Status", 50),
+      ]
+    else:
+      messages += [
+        ("GEAR", 50),
+        ("SPEED_1", 100),
+      ]
+      messages += CarState.get_cruise_messages()
 
     return CANParser(DBC[CP.carFingerprint]["pt"], messages, 0)
   
