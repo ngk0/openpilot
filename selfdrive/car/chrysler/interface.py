@@ -47,14 +47,14 @@ class CarInterface(CarInterfaceBase):
 
     # Jeep
     elif candidate == CAR.JEEP_CHEROKEE_5TH_GEN:
-      ret.steerActuatorDelay = 0.25
+      ret.steerActuatorDelay = 0.2
       ret.lateralTuning.init('pid')
-      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.15, 0.30], [0.03, 0.05]]
-      ret.lateralTuning.pid.kf = 0.00025
+      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[14., 26.], [14., 26.]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.065, 0.2], [0.015, 0.025]]
+      ret.lateralTuning.pid.kf = 0.0003
 
     elif candidate in (CAR.JEEP_GRAND_CHEROKEE, CAR.JEEP_GRAND_CHEROKEE_2019):
-      ret.steerActuatorDelay = 0.2
+      ret.steerActuatorDelay = 0.175
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.15, 0.30], [0.03, 0.05]]
