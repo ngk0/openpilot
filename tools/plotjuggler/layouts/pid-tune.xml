@@ -1,0 +1,329 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+ <tabbed_widget parent="main_window" name="Main Window">
+  <Tab containers="1" tab_name="Lateral">
+   <Container>
+    <DockSplitter count="5" sizes="0.156489;0.332061;0.332061;0.0763359;0.103053" orientation="-">
+     <DockArea name="Velocity [m/s]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="27.748993" right="59.917055" left="23.515442" bottom="26.672008"/>
+       <limitY/>
+       <curve color="#0072b2" name="/carState/vEgo"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Curvature [1/m] True [blue] Vehicle Model [purple] Plan [green]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="0.000388" right="59.917055" left="23.515442" bottom="-0.000888"/>
+       <limitY/>
+       <curve color="#009e73" name="engaged curvature plan"/>
+       <curve color="#785ef0" name="engaged curvature vehicle model"/>
+       <curve color="#0072b2" name="engaged curvature yaw"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Roll [rad]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="0.056432" right="59.917055" left="23.515442" bottom="-0.020528"/>
+       <limitY/>
+       <curve color="#ffb000" name="/liveLocationKalman/calibratedOrientationNED/value/0"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Engaged [green] Steering Pressed [blue]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="1.025000" right="59.917055" left="23.515442" bottom="-0.025000"/>
+       <limitY/>
+       <curve color="#009e73" name="/controlsState/enabled"/>
+       <curve color="#0072b2" name="/carState/steeringPressed"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Steering Limited: Rate [orange] Saturated [magenta]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="0.100000" right="59.917055" left="23.515442" bottom="-0.100000"/>
+       <limitY/>
+       <curve color="#dc267f" name="/controlsState/lateralControlState/pidState/saturated"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab containers="1" tab_name="Longitudinal">
+   <Container>
+    <DockSplitter count="5" sizes="0.187023;0.187023;0.187023;0.188931;0.25" orientation="-">
+     <DockArea name="Velocity [m/s] True [blue] Plan [green] Cruise [magenta]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="27.804782" right="59.917055" left="23.515442" bottom="26.670648"/>
+       <limitY/>
+       <curve color="#dc267f" name="/carState/cruiseState/speed"/>
+       <curve color="#009e73" name="/longitudinalPlan/speeds/0"/>
+       <curve color="#0072b2" name="/carState/vEgo"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Acceleration [m/s^2] True [blue] Actuator [purple] Plan [green]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="0.362692" right="59.917055" left="23.515442" bottom="-0.318972"/>
+       <limitY/>
+       <curve color="#009e73" name="engaged_accel_plan"/>
+       <curve color="#785ef0" name="engaged_accel_actuator"/>
+       <curve color="#0072b2" name="engaged_accel_actual"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Pitch [rad]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="-0.003441" right="59.917055" left="23.515442" bottom="-0.019528"/>
+       <limitY/>
+       <curve color="#ffb000" name="/liveLocationKalman/calibratedOrientationNED/value/1"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Engaged [green] Gas [orange] Brake [magenta]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="1.025000" right="59.917055" left="23.515442" bottom="-0.025000"/>
+       <limitY/>
+       <curve color="#009e73" name="/carControl/enabled"/>
+       <curve color="#ffb000" name="/carState/gasPressed"/>
+       <curve color="#dc267f" name="/carState/brakePressed"/>
+      </plot>
+     </DockArea>
+     <DockArea name="State [blue: off,pid,stop,start] Source [green: cruise,lead0,lead1,lead2,e2e]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="0.100000" right="59.917055" left="23.515442" bottom="-0.100000"/>
+       <limitY/>
+       <curve color="#0072b2" name="/carControl/actuators/longControlState"/>
+       <curve color="#009e73" name="/longitudinalPlan/longitudinalPlanSource"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab containers="1" tab_name="Lateral Debug">
+   <Container>
+    <DockSplitter count="4" sizes="0.249524;0.251429;0.249524;0.249524" orientation="-">
+     <DockArea name="Controller F [magenta] P [purple] I [blue]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="0.312916" right="59.917055" left="23.515442" bottom="-0.188839"/>
+       <limitY/>
+       <curve color="#f14cc1" name="/controlsState/lateralControlState/pidState/f"/>
+       <curve color="#9467bd" name="/controlsState/lateralControlState/pidState/p"/>
+       <curve color="#17becf" name="/controlsState/lateralControlState/pidState/i"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Driver Torque [blue] EPS Torque [green]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="71.500000" right="59.917055" left="23.515442" bottom="-159.500000"/>
+       <limitY/>
+       <curve color="#009e73" name="/carState/steeringTorqueEps"/>
+       <curve color="#0072b2" name="/carState/steeringTorque"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Engaged [green] Steering Pressed [blue]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="1.025000" right="59.917055" left="23.515442" bottom="-0.025000"/>
+       <limitY/>
+       <curve color="#009e73" name="/carControl/enabled"/>
+       <curve color="#0072b2" name="/carState/steeringPressed"/>
+      </plot>
+     </DockArea>
+     <DockArea name="Steering Limited: Rate [orange] Saturated [magenta]">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="0.100000" right="59.917055" left="23.515442" bottom="-0.100000"/>
+       <limitY/>
+       <curve color="#dc267f" name="/controlsState/lateralControlState/pidState/saturated"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <Tab containers="1" tab_name="PID Stuff">
+   <Container>
+    <DockSplitter count="2" sizes="0.500949;0.499051" orientation="-">
+     <DockArea name="...">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="3.307711" right="59.917055" left="23.515442" bottom="-12.516332"/>
+       <limitY/>
+       <curve color="#f14cc1" name="/carOutput/actuatorsOutput/steer"/>
+       <curve color="#9467bd" name="/carControl/actuators/steer"/>
+       <curve color="#17becf" name="/carControl/actuators/steeringAngleDeg"/>
+       <curve color="#1f77b4" name="/carOutput/actuatorsOutput/steeringAngleDeg"/>
+       <curve color="#bcbd22" name="/carState/steeringAngleDeg"/>
+       <curve color="#17becf" name="/controlsState/lateralControlState/pidState/steeringAngleDeg"/>
+       <curve color="#9467bd" name="/controlsState/lateralControlState/pidState/steeringAngleDesiredDeg"/>
+      </plot>
+     </DockArea>
+     <DockArea name="...">
+      <plot style="Lines" flip_y="false" flip_x="false" mode="TimeSeries">
+       <range top="0.408083" right="59.917055" left="23.515442" bottom="-0.349089"/>
+       <limitY/>
+       <curve color="#1f77b4" name="/controlsState/lateralControlState/pidState/p"/>
+       <curve color="#d62728" name="/controlsState/lateralControlState/pidState/i"/>
+       <curve color="#1ac938" name="/controlsState/lateralControlState/pidState/f"/>
+       <curve color="#f14cc1" name="/controlsState/lateralControlState/pidState/output"/>
+      </plot>
+     </DockArea>
+    </DockSplitter>
+   </Container>
+  </Tab>
+  <currentTabIndex index="3"/>
+ </tabbed_widget>
+ <use_relative_time_offset enabled="1"/>
+ <!-- - - - - - - - - - - - - - - -->
+ <!-- - - - - - - - - - - - - - - -->
+ <Plugins>
+  <plugin ID="DataLoad Rlog"/>
+  <plugin ID="Cereal Subscriber"/>
+ </Plugins>
+ <!-- - - - - - - - - - - - - - - -->
+ <previouslyLoaded_Datafiles>
+  <fileInfo prefix="" filename="../tmpqe9m733l.rlog">
+   <selected_datasources value=""/>
+   <plugin ID="DataLoad Rlog"/>
+  </fileInfo>
+ </previouslyLoaded_Datafiles>
+ <!-- - - - - - - - - - - - - - - -->
+ <customMathEquations>
+  <snippet name="scaledSteeringTorqueEPS">
+   <global></global>
+   <function>return value/10</function>
+   <linked_source>/carState/steeringTorqueEps</linked_source>
+  </snippet>
+  <snippet name="engaged_accel_actuator">
+   <global>engage_delay = 5
+last_bad_time = -engage_delay</global>
+   <function>accel = value
+brake = v1
+gas = v2
+enabled = v3
+
+if (brake ~= 0 or gas ~= 0 or enabled == 0) then
+  last_bad_time = time
+end
+
+if (time > last_bad_time + engage_delay) then
+  return value
+else
+  return 0
+end</function>
+   <linked_source>/carControl/actuators/accel</linked_source>
+   <additional_sources>
+    <v1>/carState/brakePressed</v1>
+    <v2>/carState/gasPressed</v2>
+    <v3>/carControl/enabled</v3>
+   </additional_sources>
+  </snippet>
+  <snippet name="engaged_accel_plan">
+   <global>engage_delay = 5
+last_bad_time = -engage_delay</global>
+   <function>accel = value
+brake = v1
+gas = v2
+enabled = v3
+
+if (brake ~= 0 or gas ~= 0 or enabled == 0) then
+  last_bad_time = time
+end
+
+if (time > last_bad_time + engage_delay) then
+  return value
+else
+  return 0
+end</function>
+   <linked_source>/longitudinalPlan/accels/0</linked_source>
+   <additional_sources>
+    <v1>/carState/brakePressed</v1>
+    <v2>/carState/gasPressed</v2>
+    <v3>/carControl/enabled</v3>
+   </additional_sources>
+  </snippet>
+  <snippet name="engaged_accel_actual">
+   <global>engage_delay = 5
+last_bad_time = -engage_delay</global>
+   <function>accel = value
+brake = v1
+gas = v2
+enabled = v3
+
+if (brake ~= 0 or gas ~= 0 or enabled == 0) then
+  last_bad_time = time
+end
+
+if (time > last_bad_time + engage_delay) then
+  return value
+else
+  return 0
+end</function>
+   <linked_source>/carState/aEgo</linked_source>
+   <additional_sources>
+    <v1>/carState/brakePressed</v1>
+    <v2>/carState/gasPressed</v2>
+    <v3>/carControl/enabled</v3>
+   </additional_sources>
+  </snippet>
+  <snippet name="engaged curvature plan">
+   <global>engage_delay = 5
+last_bad_time = -engage_delay</global>
+   <function>curvature = value
+pressed = v1
+enabled = v2
+
+if (pressed == 1 or enabled == 0) then
+  last_bad_time = time
+end
+
+if (time > last_bad_time + engage_delay) then
+  return value
+else
+  return 0
+end</function>
+   <linked_source>/lateralPlan/curvatures/0</linked_source>
+   <additional_sources>
+    <v1>/carState/steeringPressed</v1>
+    <v2>/carControl/enabled</v2>
+   </additional_sources>
+  </snippet>
+  <snippet name="engaged curvature vehicle model">
+   <global>engage_delay = 5
+last_bad_time = -engage_delay</global>
+   <function>curvature = value
+pressed = v1
+enabled = v2
+
+if (pressed == 1 or enabled == 0) then
+  last_bad_time = time
+end
+
+if (time > last_bad_time + engage_delay) then
+  return value
+else
+  return 0
+end</function>
+   <linked_source>/controlsState/curvature</linked_source>
+   <additional_sources>
+    <v1>/carState/steeringPressed</v1>
+    <v2>/carControl/enabled</v2>
+   </additional_sources>
+  </snippet>
+  <snippet name="engaged curvature yaw">
+   <global>engage_delay = 5
+last_bad_time = -engage_delay</global>
+   <function>curvature = value / v3
+pressed = v1
+enabled = v2
+
+if (pressed == 1 or enabled == 0) then
+  last_bad_time = time
+end
+
+if (time > last_bad_time + engage_delay) then
+  return curvature
+else
+  return 0
+end</function>
+   <linked_source>/liveLocationKalman/angularVelocityCalibrated/value/2</linked_source>
+   <additional_sources>
+    <v1>/carState/steeringPressed</v1>
+    <v2>/carControl/enabled</v2>
+    <v3>/liveLocationKalman/velocityCalibrated/value/0</v3>
+   </additional_sources>
+  </snippet>
+ </customMathEquations>
+ <snippets/>
+ <!-- - - - - - - - - - - - - - - -->
+</root>
+
