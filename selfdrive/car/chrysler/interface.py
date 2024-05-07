@@ -51,7 +51,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[14., 26.], [14., 26.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.065, 0.2], [0.015, 0.025]]
-      ret.lateralTuning.pid.kf = 0.0003
+      ret.lateralTuning.pid.kf = 0.0001 # 2024-05-06 JYOUNG
 
     elif candidate in (CAR.JEEP_GRAND_CHEROKEE, CAR.JEEP_GRAND_CHEROKEE_2019):
       ret.steerActuatorDelay = 0.175
