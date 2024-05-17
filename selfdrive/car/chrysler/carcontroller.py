@@ -4,7 +4,9 @@ from openpilot.selfdrive.car import apply_meas_steer_torque_limits
 from openpilot.selfdrive.car.chrysler import chryslercan
 from openpilot.selfdrive.car.chrysler.values import RAM_CARS, CUSW_CARS, CarControllerParams, ChryslerFlags
 from openpilot.selfdrive.car.interfaces import CarControllerBase
+from common.params import Params
 
+BTN_STARTSTOP_ADDR = b'\x80\x24'
 
 class CarController(CarControllerBase):
   def __init__(self, dbc_name, CP, VM):
@@ -19,6 +21,9 @@ class CarController(CarControllerBase):
 
     self.packer = CANPacker(dbc_name)
     self.params = CarControllerParams(CP)
+
+    self.startStopDisabled = False
+    self.lastStartStopDisabled = False
 
   def update(self, CC, CS, now_nanos):
     can_sends = []
@@ -45,6 +50,12 @@ class CarController(CarControllerBase):
         can_sends.append(chryslercan.create_lkas_hud(self.packer, self.CP, lkas_active, CC.hudControl.visualAlert,
                                                      self.hud_count, CS.lkas_car_model, CS.auto_high_beam))
         self.hud_count += 1
+
+    self.params.put_bool('spStartStopDisable', True)
+    # StartStop Engine Logic
+    self.startStopDisabled = Params.get_bool("spStartStopDisable")
+    if self.startStopDisabled  and not self.lastStartStopDisabled:
+            can_sends.append(make_can_msg(0x7cc, BTN_STARTSTOP_ADDR, 0))
 
     # steering
     if self.frame % self.params.STEER_STEP == 0:
