@@ -61,7 +61,7 @@ class CarController(CarControllerBase):
     #self.startStopDisabled = Params.get_bool("spStartStopDisable")
     #if self.startStopDisabled  and not self.lastStartStopDisabled:
     if not self.startStopOnce: 
-      can_sends.append(make_can_msg(BTN_STARTSTOP_ADDR, BTN_STARTSTOP_PRESS_CMD, 0))
+      #can_sends.append(make_can_msg(BTN_STARTSTOP_ADDR, BTN_STARTSTOP_PRESS_CMD, 0))
       self.startStopOnce = True
 
 
