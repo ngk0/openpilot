@@ -6,7 +6,11 @@ from openpilot.selfdrive.car.chrysler.values import RAM_CARS, CUSW_CARS, CarCont
 from openpilot.selfdrive.car.interfaces import CarControllerBase
 from common.params import Params
 
-BTN_STARTSTOP_ADDR = b'\x80\x24'
+BTN_STARTSTOP_ADDR = 0x7cc
+BTN_STARTSTOP_PRESS_CMD = b'\x80\x24'
+STS_STARTSTOP_ENABLED_ADDR = 0x4d0 
+STS_STARTSTOP_ENABLED = 0x0000dd0005c00000
+STS_STARTSTOP_DISABLED = 0x0000dd0003480000
 
 class CarController(CarControllerBase):
   def __init__(self, dbc_name, CP, VM):
@@ -24,6 +28,7 @@ class CarController(CarControllerBase):
 
     self.startStopDisabled = False
     self.lastStartStopDisabled = False
+    self.startStopOnce = False
 
   def update(self, CC, CS, now_nanos):
     can_sends = []
@@ -51,11 +56,14 @@ class CarController(CarControllerBase):
                                                      self.hud_count, CS.lkas_car_model, CS.auto_high_beam))
         self.hud_count += 1
 
-    self.params.put_bool('spStartStopDisable', True)
+    #self.params.put_bool('spStartStopDisable', True)
     # StartStop Engine Logic
-    self.startStopDisabled = Params.get_bool("spStartStopDisable")
-    if self.startStopDisabled  and not self.lastStartStopDisabled:
-            can_sends.append(make_can_msg(0x7cc, BTN_STARTSTOP_ADDR, 0))
+    #self.startStopDisabled = Params.get_bool("spStartStopDisable")
+    #if self.startStopDisabled  and not self.lastStartStopDisabled:
+    if not self.startStopOnce: 
+      can_sends.append(make_can_msg(BTN_STARTSTOP_ADDR, BTN_STARTSTOP_PRESS_CMD, 0))
+      self.startStopOnce = True
+
 
     # steering
     if self.frame % self.params.STEER_STEP == 0:
