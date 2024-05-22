@@ -111,7 +111,7 @@ class CarControllerParams:
     elif CP.carFingerprint in CUSW_CARS:
       self.STEER_DELTA_UP = 4
       self.STEER_DELTA_DOWN = 4
-      self.STEER_MAX = 255 # // 19' Cherokee KL Faulted at 261
+      self.STEER_MAX = 260 # // 19' Cherokee KL Faulted at 261, 255 is okay
     else:
       self.STEER_DELTA_UP = 3
       self.STEER_DELTA_DOWN = 3
