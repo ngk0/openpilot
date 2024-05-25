@@ -19,19 +19,19 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.1
     ret.steerLimitTimer = 0.4
 
-    # safety config
-    if candidate in CUSW_CARS :
-      if (candidate == CAR.JEEP_CHEROKEE_5TH_GEN):
-        #ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_CUSW_JEEP_CHEROKEE_5TH_GEN
-        ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chryslerCusw)]
-      elif
-        ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chryslerCusw)]
+    # Safety config
+    if candidate in CUSW_CARS:
+        if candidate == CAR.JEEP_CHEROKEE_5TH_GEN:
+            ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chryslerCusw)]
+            # ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_CUSW_JEEP_CHEROKEE_5TH_GEN
+        else:
+            ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chryslerCusw)]
     else:
-      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chrysler)]
-      if candidate in RAM_HD:
-        ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_HD
-      elif candidate in RAM_DT:
-        ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_DT
+        ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chrysler)]
+        if candidate in RAM_HD:
+            ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_HD
+        elif candidate in RAM_DT:
+            ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_DT
 
     CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
     if candidate not in (RAM_CARS, CUSW_CARS):
