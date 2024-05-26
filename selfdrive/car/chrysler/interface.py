@@ -21,10 +21,11 @@ class CarInterface(CarInterfaceBase):
 
     # Safety config
     if candidate in CUSW_CARS:
-      ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chryslerCusw)]
-      if candidate == CAR.JEEP_CHEROKEE_5TH_GEN:
-      #ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_CUSW_JEEP_CHEROKEE_5TH_GEN
-      else:
+        ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chryslerCusw)]
+        if candidate == CAR.JEEP_CHEROKEE_5TH_GEN:
+            # ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_CUSW_JEEP_CHEROKEE_5TH_GEN
+            pass
+    else:
         ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chrysler)]
         if candidate in RAM_HD:
             ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_HD
