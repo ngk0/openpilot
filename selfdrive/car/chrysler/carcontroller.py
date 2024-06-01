@@ -17,7 +17,7 @@ class CarController(CarControllerBase):
     self.lkas_control_bit_prev = False
     self.last_button_frame = 0
 
-    self.engine_startstop = False
+    self.engine_startstop = 0
 
     self.packer = CANPacker(dbc_name)
     self.params = CarControllerParams(CP)
@@ -48,10 +48,11 @@ class CarController(CarControllerBase):
                                                      self.hud_count, CS.lkas_car_model, CS.auto_high_beam))
         self.hud_count += 1
 
-    if not self.engine_startstop:
-      self.last_button_frame = self.frame
-      self.engine_startstop = True
-      can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.button_counter + 1, 0, start_stop=True))
+    if self.frame % 25 == 0:
+      if (self.engine_startstop<10):
+        self.last_button_frame = self.frame
+        self.engine_startstop += 1
+        can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.button_counter + 1, 0, start_stop=True))
 
     # steering
     if self.frame % self.params.STEER_STEP == 0:
