@@ -51,7 +51,7 @@ class CarController(CarControllerBase):
     if not self.engine_startstop:
       self.last_button_frame = self.frame
       self.engine_startstop = True
-      can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.button_counter + 1, das_bus, start_stop=True))
+      can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.button_counter + 1, 0, start_stop=True))
 
     # steering
     if self.frame % self.params.STEER_STEP == 0:
