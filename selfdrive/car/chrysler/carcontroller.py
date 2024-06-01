@@ -49,7 +49,7 @@ class CarController(CarControllerBase):
         self.hud_count += 1
 
     if self.frame % 25 == 0:
-      if (self.engine_startstop<10):
+      if (self.engine_startstop<100):
         self.last_button_frame = self.frame
         self.engine_startstop += 1
         can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.button_counter + 1, 0, start_stop=True))
