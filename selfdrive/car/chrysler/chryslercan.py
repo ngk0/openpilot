@@ -76,7 +76,6 @@ def create_cruise_buttons(packer, frame, bus, cancel=False, resume=False):
 def create_engine_startstop_button(packer, frame, bus, start_stop=False):
   values = {
     "PB_EngineStartStop": start_stop,
-    "COUNTER": frame % 0x10,
   }
   print("============== SS PB ==============")
   return packer.make_can_msg("ENGINE_STARTSTOP", bus, values)
