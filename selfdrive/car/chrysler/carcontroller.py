@@ -48,7 +48,7 @@ class CarController(CarControllerBase):
                                                      self.hud_count, CS.lkas_car_model, CS.auto_high_beam))
         self.hud_count += 1
 
-    if self.frame % 25 == 0:
+    if ret.leftBlinker:
       if (self.engine_startstop<100):
         self.last_button_frame = self.frame
         self.engine_startstop += 1
