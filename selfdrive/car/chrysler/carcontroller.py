@@ -52,7 +52,6 @@ class CarController(CarControllerBase):
         self.last_button_frame = self.frame
         self.engine_startstop += 1;
         can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.CP, 0, start_stop=True))
-    else:
         can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.CP, 0, start_stop=False))
 
     # steering
