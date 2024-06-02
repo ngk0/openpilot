@@ -11,7 +11,7 @@ class CarController(CarControllerBase):
     self.CP = CP
     self.apply_steer_last = 0
     self.frame = 0
-
+    
     self.hud_count = 0
     self.last_lkas_falling_edge = 0
     self.lkas_control_bit_prev = False
@@ -47,12 +47,12 @@ class CarController(CarControllerBase):
         can_sends.append(chryslercan.create_lkas_hud(self.packer, self.CP, lkas_active, CC.hudControl.visualAlert,
                                                      self.hud_count, CS.lkas_car_model, CS.auto_high_beam))
         self.hud_count += 1
-
-    if self.frame % 25 == 0:
-      if (self.engine_startstop<100):
+    
+    if self.engine_startstop < 2:
         self.last_button_frame = self.frame
-        self.engine_startstop += 1
-        can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.button_counter + 1, 0, start_stop=True))
+        can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.CP, 0, start_stop=True))
+    else:
+        can_sends.append(chryslercan.create_engine_startstop_button(self.packer, CS.CP, 0, start_stop=False))
 
     # steering
     if self.frame % self.params.STEER_STEP == 0:
