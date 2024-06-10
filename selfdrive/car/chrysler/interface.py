@@ -2,7 +2,7 @@
 from cereal import car, custom
 from panda import Panda
 from openpilot.selfdrive.car import create_button_events, get_safety_config
-from openpilot.selfdrive.car.chrysler.values import CAR, RAM_HD, RAM_DT, RAM_CARS, ChryslerFlags
+from openpilot.selfdrive.car.chrysler.values import CAR, RAM_HD, RAM_DT, RAM_CARS, CUSW_CARS, ChryslerFlags
 from openpilot.selfdrive.car.interfaces import CarInterfaceBase
 
 ButtonType = car.CarState.ButtonEvent.Type
@@ -20,15 +20,21 @@ class CarInterface(CarInterfaceBase):
     ret.steerActuatorDelay = 0.1
     ret.steerLimitTimer = 0.4
 
-    # safety config
-    ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chrysler)]
-    if candidate in RAM_HD:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_HD
-    elif candidate in RAM_DT:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_DT
+    # Safety config
+    if candidate in CUSW_CARS:
+        ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chryslerCusw)]
+        if candidate == CAR.JEEP_CHEROKEE_5TH_GEN:
+            # ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_CUSW_JEEP_CHEROKEE_5TH_GEN
+            pass
+    else:
+        ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.chrysler)]
+        if candidate in RAM_HD:
+            ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_HD
+        elif candidate in RAM_DT:
+            ret.safetyConfigs[0].safetyParam |= Panda.FLAG_CHRYSLER_RAM_DT
 
     CarInterfaceBase.configure_torque_tune(candidate, ret.lateralTuning)
-    if candidate not in RAM_CARS:
+    if candidate not in (RAM_CARS, CUSW_CARS):
       # Newer FW versions standard on the following platforms, or flashed by a dealer onto older platforms have a higher minimum steering speed.
       new_eps_platform = candidate in (CAR.PACIFICA_2019_HYBRID, CAR.PACIFICA_2020, CAR.JEEP_GRAND_CHEROKEE_2019, CAR.DODGE_DURANGO)
       new_eps_firmware = any(fw.ecu == 'eps' and fw.fwVersion[:4] >= b"6841" for fw in car_fw)
@@ -43,6 +49,13 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kf = 0.00006
 
     # Jeep
+    elif candidate == CAR.JEEP_CHEROKEE_5TH_GEN:  # JCG5 Tested
+      ret.steerActuatorDelay = 0.15
+      ret.lateralTuning.init('pid')
+      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[14., 26.], [14., 26.]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.065, 0.2], [0.015, 0.025]]
+      ret.lateralTuning.pid.kf = 0.000115
+
     elif candidate in (CAR.JEEP_GRAND_CHEROKEE, CAR.JEEP_GRAND_CHEROKEE_2019):
       ret.steerActuatorDelay = 0.2
 
@@ -66,13 +79,14 @@ class CarInterface(CarInterfaceBase):
     else:
       raise ValueError(f"Unsupported car: {candidate}")
 
-    if ret.flags & ChryslerFlags.HIGHER_MIN_STEERING_SPEED:
-      # TODO: allow these cars to steer down to 13 m/s if already engaged.
-      # TODO: Durango 2020 may be able to steer to zero once above 38 kph
-      ret.minSteerSpeed = 17.5  # m/s 17 on the way up, 13 on the way down once engaged.
+    if candidate not in (CUSW_CARS):  # Logic untested for CUSW_CARS
+      if ret.flags & ChryslerFlags.HIGHER_MIN_STEERING_SPEED:
+        # TODO: allow these cars to steer down to 13 m/s if already engaged.
+        # TODO: Durango 2020 may be able to steer to zero once above 38 kph
+        ret.minSteerSpeed = 17.5  # m/s 17 on the way up, 13 on the way down once engaged.
 
     ret.centerToFront = ret.wheelbase * 0.44
-    ret.enableBsm = 720 in fingerprint[0]
+    ret.enableBsm = (0x62cc033 if candidate in CUSW_CARS else 0x2d0) in fingerprint[0]
 
     return ret
 

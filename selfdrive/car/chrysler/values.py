@@ -69,6 +69,11 @@ class CAR(Platforms):
   )
 
   # Jeep
+  JEEP_CHEROKEE_5TH_GEN = ChryslerPlatformConfig( # Tested JCG5 MY 2019
+    [ChryslerCarDocs("Jeep Cherokee 2019-23")],
+    ChryslerCarSpecs(mass=1747., wheelbase=2.70, steerRatio=17.0, minSteerSpeed=14),
+    dbc_dict('chrysler_cusw', None),
+  )
   JEEP_GRAND_CHEROKEE = ChryslerPlatformConfig(  # includes 2017 Trailhawk
     "JEEP GRAND CHEROKEE V6 2018",
     [ChryslerCarDocs("Jeep Grand Cherokee 2016-18", video_link="https://www.youtube.com/watch?v=eLR9o2JkuRk")],
@@ -101,8 +106,11 @@ class CAR(Platforms):
 
 class CarControllerParams:
   def __init__(self, CP):
-    self.STEER_STEP = 2  # 50 Hz
-    self.STEER_ERROR_MAX = 80
+    if CP.carFingerprint in CUSW_CARS:
+      self.STEER_STEP = 1  # 100 Hz
+    else:
+      self.STEER_STEP = 2  # 50 Hz
+      self.STEER_ERROR_MAX = 80
     if CP.carFingerprint in RAM_HD:
       self.STEER_DELTA_UP = 14
       self.STEER_DELTA_DOWN = 14
@@ -111,6 +119,10 @@ class CarControllerParams:
       self.STEER_DELTA_UP = 6
       self.STEER_DELTA_DOWN = 6
       self.STEER_MAX = 261  # EPS allows more, up to 350?
+    elif CP.carFingerprint in CUSW_CARS:
+      self.STEER_DELTA_UP = 4
+      self.STEER_DELTA_DOWN = 4
+      self.STEER_MAX = 255   # Tested JCG5 MY 2019 - Upper Limit at 255
     else:
       self.STEER_DELTA_UP = 3
       self.STEER_DELTA_DOWN = 3
@@ -122,6 +134,7 @@ STEER_THRESHOLD = 120
 RAM_DT = {CAR.RAM_1500, }
 RAM_HD = {CAR.RAM_HD, }
 RAM_CARS = RAM_DT | RAM_HD
+CUSW_CARS = {CAR.JEEP_CHEROKEE_5TH_GEN, }
 
 
 CHRYSLER_VERSION_REQUEST = bytes([uds.SERVICE_TYPE.READ_DATA_BY_IDENTIFIER]) + \
