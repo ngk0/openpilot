@@ -50,7 +50,7 @@ class CarInterface(CarInterfaceBase):
 
     # Jeep
     elif candidate == CAR.JEEP_CHEROKEE_5TH_GEN:  # JCG5 Tested
-      ret.steerActuatorDelay = 0.15
+      ret.steerActuatorDelay = 0.1
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[14., 26.], [14., 26.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.065, 0.2], [0.015, 0.025]]
