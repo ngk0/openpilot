@@ -100,6 +100,13 @@ class HyundaiFlags(IntFlag):
   LKAS12 = 2 ** 25
   NAV_MSG = 2 ** 26
 
+
+class HyundaiFlagsFP(IntFlag):
+  FP_CAMERA_SCC_LEAD = 2 ** 6
+  FP_LKAS12 = 2 ** 7
+  FP_RADAR_TRACKS = 2 ** 8
+
+
 class Footnote(Enum):
   CANFD = CarFootnote(
     "Requires a <a href=\"https://comma.ai/shop/can-fd-panda-kit\" target=\"_blank\">CAN FD panda kit</a> if not using " +

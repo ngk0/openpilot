@@ -80,6 +80,7 @@ frogpilot_default_params: list[tuple[str, str | bytes, int]] = [
   ("BlindSpotMetrics", "1", 2),
   ("BlindSpotPath", "1", 0),
   ("BorderMetrics", "0", 2),
+  ("BrakeSignal", "0", 2),
   ("CameraView", "3", 2),
   ("CarMake", "", 0),
   ("CarModel", "", 0),
@@ -164,6 +165,8 @@ frogpilot_default_params: list[tuple[str, str | bytes, int]] = [
   ("HolidayThemes", "1", 0),
   ("HumanAcceleration", "1", 2),
   ("HumanFollowing", "1", 2),
+  ("HyundaiRadarTracks", "1", 2),
+  ("HKGtuning", "0", 2),
   ("IncreasedStoppedDistance", "0", 2),
   ("IncreaseThermalLimits", "0", 3),
   ("JerkInfo", "0", 3),
@@ -374,6 +377,7 @@ class FrogPilotVariables:
         car_model = CP.carFingerprint
         has_auto_tune = car_model in {"hyundai", "toyota"} and CP.lateralTuning.which == "torque"
         has_bsm = CP.enableBsm
+        has_pedal = CP.enableGasInterceptor
         has_radar = not CP.radarUnavailable
         is_pid_car = CP.lateralTuning.which == "pid"
         max_acceleration_enabled = CP.alternativeExperience & ALTERNATIVE_EXPERIENCE.RAISE_LONGITUDINAL_LIMITS_TO_ISO_MAX
@@ -385,6 +389,7 @@ class FrogPilotVariables:
       car_model = "mock"
       has_auto_tune = False
       has_bsm = False
+      has_pedal = False
       has_radar = False
       is_pid_car = False
       max_acceleration_enabled = False
@@ -559,6 +564,9 @@ class FrogPilotVariables:
 
     toggle.experimental_gm_tune = openpilot_longitudinal and car_make == "gm" and (params.get_bool("ExperimentalGMTune") if tuning_level >= level["ExperimentalGMTune"] else default.get_bool("ExperimentalGMTune"))
 
+    toggle.hyundai_radar_tracks = car_make == "hyundai" and params.get_bool("HyundaiRadarTracks") if tuning_level >= level["HyundaiRadarTracks"] else default.get_bool("HyundaiRadarTracks")
+    toggle.hkg_tuning = openpilot_longitudinal and car_make == "hyundai" and params.get_bool("HKGtuning") if tuning_level >= level["HKGtuning"] else default.get_bool("HKGtuning")
+
     toggle.experimental_mode_via_press = openpilot_longitudinal and (params.get_bool("ExperimentalModeActivation") if tuning_level >= level["ExperimentalModeActivation"] else default.get_bool("ExperimentalModeActivation"))
     toggle.experimental_mode_via_distance = toggle.experimental_mode_via_press and (params.get_bool("ExperimentalModeViaDistance") if tuning_level >= level["ExperimentalModeViaDistance"] else default.get_bool("ExperimentalModeViaDistance"))
     toggle.experimental_mode_via_lkas = not toggle.always_on_lateral_lkas and toggle.experimental_mode_via_press and car_make != "subaru" and (params.get_bool("ExperimentalModeViaLKAS") if tuning_level >= level["ExperimentalModeViaLKAS"] else default.get_bool("ExperimentalModeViaLKAS"))
@@ -589,7 +597,7 @@ class FrogPilotVariables:
     toggle.sport_plus = max_acceleration_enabled and toggle.acceleration_profile == 3
     toggle.deceleration_profile = params.get_int("DecelerationProfile") if longitudinal_tuning and tuning_level >= level["DecelerationProfile"] else default.get_int("DecelerationProfile")
     toggle.human_acceleration = longitudinal_tuning and (params.get_bool("HumanAcceleration") if tuning_level >= level["HumanAcceleration"] else default.get_bool("HumanAcceleration"))
-    toggle.human_following = longitudinal_tuning and (params.get_bool("HumanFollowing") if tuning_level >= level["HumanFollowing"] else default.get_bool("HumanFollowing"))
+    toggle.human_following = longitudinal_tuning and not toggle.hkg_tuning and (params.get_bool("HumanFollowing") if tuning_level >= level["HumanFollowing"] else default.get_bool("HumanFollowing"))
     toggle.lead_detection_probability = clip(params.get_int("LeadDetectionThreshold") / 100, 0.01, 0.99) if longitudinal_tuning and tuning_level >= level["LeadDetectionThreshold"] else clip(default.get_int("LeadDetectionThreshold") / 100, 0.01, 0.99)
     toggle.max_desired_acceleration = clip(params.get_float("MaxDesiredAcceleration"), 0.1, 4.0) if longitudinal_tuning and tuning_level >= level["MaxDesiredAcceleration"] else default.get_float("MaxDesiredAcceleration")
     toggle.taco_tune = longitudinal_tuning and (params.get_bool("TacoTune") if tuning_level >= level["TacoTune"] else default.get_bool("TacoTune"))
@@ -671,6 +679,8 @@ class FrogPilotVariables:
     toggle.stopped_timer = quality_of_life_visuals and (params.get_bool("StoppedTimer") if tuning_level >= level["StoppedTimer"] else default.get_bool("StoppedTimer"))
 
     toggle.rainbow_path = params.get_bool("RainbowPath") if tuning_level >= level["RainbowPath"] else default.get_bool("RainbowPath")
+
+    toggle.brake_signal= params.get_bool("BrakeSignal") if tuning_level >= level["BrakeSignal"] else default.get_bool("BrakeSignal")
 
     toggle.random_events = params.get_bool("RandomEvents") if tuning_level >= level["RandomEvents"] else default.get_bool("RandomEvents")
 
