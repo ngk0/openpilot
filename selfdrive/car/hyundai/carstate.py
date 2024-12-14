@@ -43,7 +43,8 @@ class CarState(CarStateBase):
                                  "CRUISE_BUTTONS"
     self.is_metric = False
     self.buttons_counter = 0
-
+    self.msg_161 = {}
+    self.msg_162 = {}
     self.cruise_info = {}
 
     # On some cars, CLU15->CF_Clu_VehicleSpeed can oscillate faster than the dash updates. Sample at 5 Hz
@@ -248,14 +249,14 @@ class CarState(CarStateBase):
 
     # TODO: alt signal usage may be described by cp.vl['BLINKERS']['USE_ALT_LAMP']
     left_blinker_sig, right_blinker_sig = "LEFT_LAMP", "RIGHT_LAMP"
-    if self.CP.carFingerprint == CAR.HYUNDAI_KONA_EV_2ND_GEN:
+    if self.CP.carFingerprint == (CAR.HYUNDAI_KONA_EV_2ND_GEN, CAR.KIA_K5_2025):
       left_blinker_sig, right_blinker_sig = "LEFT_LAMP_ALT", "RIGHT_LAMP_ALT"
     ret.leftBlinker, ret.rightBlinker = self.update_blinker_from_lamp(50, cp.vl["BLINKERS"][left_blinker_sig],
                                                                       cp.vl["BLINKERS"][right_blinker_sig])
     if self.CP.enableBsm:
-      ret.leftBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"]["FL_INDICATOR"] != 0
-      ret.rightBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"]["FR_INDICATOR"] != 0
-
+      alt = "_ALT" if self.CP.carFingerprint == CAR.KIA_K5_2025 else ""
+      ret.leftBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"][f"FL_INDICATOR{alt}"] != 0
+      ret.rightBlindspot = cp.vl["BLINDSPOTS_REAR_CORNERS"][f"FR_INDICATOR{alt}"] != 0
     # cruise state
     # CAN FD cars enable on main button press, set available if no TCS faults preventing engagement
     ret.cruiseState.available = self.main_enabled
@@ -292,6 +293,11 @@ class CarState(CarStateBase):
 
     # FrogPilot CarState functions
     fp_ret.brakeLights = bool(cp.vl["TCS"]["DriverBraking"])
+
+    if self.CP.carFingerprint in (CAR.KIA_K5_2025,) and "MSG_161" in cp_cam.vl:
+      self.msg_161 = copy.copy(cp_cam.vl["MSG_161"])
+      self.msg_162 = copy.copy(cp_cam.vl["MSG_162"])
+
 
     if self.CP.flags & HyundaiFlags.NAV_MSG or self.CP.fpFlags & HyundaiFlagsFP.FP_LKAS12:
       fp_ret.dashboardSpeedLimit = self.calculate_speed_limit(cp, cp_cam) * speed_factor
@@ -434,6 +440,7 @@ class CarState(CarStateBase):
         ("SCC_CONTROL", 50),
       ]
 
+
     if CP.flags & HyundaiFlags.CANFD_HDA2 and CP.flags & HyundaiFlags.NAV_MSG:
       messages.append(("CLUSTER_SPEED_LIMIT", 10))
 
@@ -452,5 +459,11 @@ class CarState(CarStateBase):
 
     if not (CP.flags & HyundaiFlags.CANFD_HDA2) and CP.flags & HyundaiFlags.NAV_MSG:
       messages.append(("CLUSTER_SPEED_LIMIT", 10))
+
+    if CP.carFingerprint in (CAR.KIA_K5_2025,):
+      messages += [
+        ("MSG_161", 20),
+        ("MSG_162", 20),
+      ]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], messages, CanBus(CP).CAM)
