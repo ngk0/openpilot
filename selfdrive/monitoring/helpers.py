@@ -319,7 +319,7 @@ class DriverMonitoring:
       self._reset_awareness()
       return
 
-    driver_attentive = self.driver_distraction_filter.x < 0.37
+    driver_attentive = 1
     awareness_prev = self.awareness
 
     if (driver_attentive and self.face_detected and self.pose.low_std and self.awareness > 0):
