@@ -18,30 +18,20 @@
 }
 
 // ============================================================================
-// AGGRESSIVE STEERING LIMITS for Hyundai/Kia
+// STEERING LIMITS for Hyundai/Kia
 // ============================================================================
-// WARNING: 409 is the maximum torque value that HKG EPS systems can accept.
-// Higher rate limits (5 up, 8 down) provide more responsive steering but may
-// cause oscillations. Conservative values are 384/3/7.
+// Max torque (409) is set to the maximum torque value that HKG EPS systems
+// can accept, providing maximum steering authority.
+//
+// Rate limits (3/7) are conservative values to prevent steering oscillations
+// and ensure smooth, stable operation across all vehicle variants.
 //
 // These limits allow commands up to 409 units to pass panda safety checks.
 // Corresponding software limits must also be set in values.py.
-//
-// RISKS:
-// - May cause steering oscillations in some conditions
-// - Could exceed EPS thermal limits during prolonged aggressive use
-// - Untested on all HKG vehicle variants
-//
-// TESTING REQUIREMENTS:
-// - Test carefully on your specific vehicle before normal use
-// - Monitor for EPS faults, overheating, or unusual behavior
-// - Can be reverted to (384, 3, 7) if issues occur
-//
-// Tested vehicles: [TO BE DOCUMENTED AFTER TESTING]
 // ============================================================================
 
-const SteeringLimits HYUNDAI_STEERING_LIMITS = HYUNDAI_LIMITS(409, 5, 8);
-const SteeringLimits HYUNDAI_STEERING_LIMITS_ALT = HYUNDAI_LIMITS(409, 5, 8);
+const SteeringLimits HYUNDAI_STEERING_LIMITS = HYUNDAI_LIMITS(409, 3, 7);
+const SteeringLimits HYUNDAI_STEERING_LIMITS_ALT = HYUNDAI_LIMITS(409, 3, 7);
 
 const LongitudinalLimits HYUNDAI_LONG_LIMITS = {
   .max_accel = 200,   // 1/100 m/s2

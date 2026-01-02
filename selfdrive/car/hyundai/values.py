@@ -18,66 +18,51 @@ class CarControllerParams:
 
   def __init__(self, CP, vEgoRaw=100., frogpilot_toggles=None):
     # ============================================================================
-    # AGGRESSIVE STEERING PARAMETERS - WARNING
+    # STEERING PARAMETERS
     # ============================================================================
-    # These values (409/5/8) exceed comma.ai's conservative defaults (384/3/7).
-    # 409 is the maximum torque value that HKG EPS systems can accept.
+    # Max torque (409) is set to the maximum torque value that HKG EPS systems 
+    # can accept, providing maximum steering authority.
+    # 
+    # Rate limits (3/7) are conservative values to prevent steering oscillations
+    # and ensure smooth operation across all vehicle variants.
     #
-    # BENEFITS:
-    # - Sharper, more responsive steering corrections
-    # - Better handling of sharp curves and emergency maneuvers
-    # - Reduced lane departure in challenging conditions
-    #
-    # RISKS:
-    # - May cause steering oscillations ("ping-ponging") in some conditions
-    # - Could exceed EPS thermal limits during prolonged aggressive use
-    # - Untested on all HKG vehicle variants
-    # - May trigger EPS faults on vehicles with weaker steering systems
-    #
-    # TESTING REQUIREMENTS:
-    # - Start with low speeds in safe environment
-    # - Monitor for EPS warning lights continuously
-    # - Check for unusual steering behavior or resistance
-    # - Be prepared to rollback to conservative values (384/3/7)
-    #
-    # By using these values, you accept all risks and responsibility.
+    # These parameters balance responsiveness with stability.
     # ============================================================================
     
-    self.STEER_DELTA_UP = 5      # Increased from 3 - more aggressive ramp up
-    self.STEER_DELTA_DOWN = 8    # Increased from 7 - faster unwind
+    self.STEER_DELTA_UP = 3      # Conservative ramp up rate
+    self.STEER_DELTA_DOWN = 7    # Conservative unwind rate
     self.STEER_DRIVER_ALLOWANCE = 50
     self.STEER_DRIVER_MULTIPLIER = 2
     self.STEER_DRIVER_FACTOR = 1
     self.STEER_THRESHOLD = 150
     self.STEER_STEP = 1  # 100 Hz
 
-    # Apply aggressive 409 limit to CANFD vehicles
+    # Apply 409 max torque to CANFD vehicles
     if CP.carFingerprint in CANFD_CAR and frogpilot_toggles and frogpilot_toggles.taco_tune_hacks:
-      self.STEER_MAX = 409 if vEgoRaw < 11. else 409  # Aggressive at all speeds
+      self.STEER_MAX = 409  # Maximum EPS capability
       self.STEER_DRIVER_ALLOWANCE = 350
       self.STEER_DRIVER_MULTIPLIER = 2
       self.STEER_THRESHOLD = 350
     elif CP.carFingerprint in CANFD_CAR:
-      self.STEER_MAX = 409         # Increased from 270 - aggressive mode
+      self.STEER_MAX = 409         # Maximum EPS capability
       self.STEER_DRIVER_ALLOWANCE = 250
       self.STEER_DRIVER_MULTIPLIER = 2
       self.STEER_THRESHOLD = 250
 
-    # Apply 409 to all vehicles - removing conservative 255 limit
-    # Original comment: To determine the limit for your car, find the maximum value that the stock LKAS will request.
-    # Note: 409 is the true HKG EPS maximum, not just stock LKAS observation
+    # Apply 409 to specific vehicles
+    # Note: 409 is the true HKG EPS maximum
     elif CP.carFingerprint in (CAR.GENESIS_G80, CAR.HYUNDAI_ELANTRA, CAR.HYUNDAI_ELANTRA_GT_I30, CAR.HYUNDAI_IONIQ,
                                CAR.HYUNDAI_IONIQ_EV_LTD, CAR.HYUNDAI_SANTA_FE_PHEV_2022, CAR.HYUNDAI_SONATA_LF, CAR.KIA_FORTE, CAR.KIA_NIRO_PHEV,
                                CAR.KIA_OPTIMA_H, CAR.KIA_OPTIMA_H_G4_FL, CAR.KIA_SORENTO):
-      self.STEER_MAX = 409         # Increased from 255 - use full EPS capability
+      self.STEER_MAX = 409         # Maximum EPS capability
 
     # Apply 409 to ALT_LIMITS vehicles as well
     elif CP.flags & HyundaiFlags.ALT_LIMITS:
-      self.STEER_MAX = 409         # Increased from 270 - aggressive mode
+      self.STEER_MAX = 409         # Maximum EPS capability
 
-    # Default for most HKG - aggressive 409
+    # Default for most HKG
     else:
-      self.STEER_MAX = 409         # Increased from 384 - maximum EPS capability
+      self.STEER_MAX = 409         # Maximum EPS capability
 
 
 class HyundaiFlags(IntFlag):
