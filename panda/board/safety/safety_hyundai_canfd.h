@@ -1,11 +1,18 @@
 #include "safety_hyundai_common.h"
 
+// ============================================================================
+// AGGRESSIVE CANFD STEERING LIMITS
+// ============================================================================
+// Updated to match non-CANFD aggressive limits (409/5/8)
+// See safety_hyundai.h for detailed warnings and testing requirements
+// ============================================================================
+
 const SteeringLimits HYUNDAI_CANFD_STEERING_LIMITS = {
-  .max_steer = 330,
+  .max_steer = 409,              // Increased from 330 - maximum EPS capability
   .max_rt_delta = 112,
   .max_rt_interval = 250000,
-  .max_rate_up = 2,
-  .max_rate_down = 3,
+  .max_rate_up = 5,              // Increased from 2 - more aggressive ramp up
+  .max_rate_down = 8,            // Increased from 3 - faster unwind
   .driver_torque_allowance = 250,
   .driver_torque_factor = 2,
   .type = TorqueDriverLimited,
