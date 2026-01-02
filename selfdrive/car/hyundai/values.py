@@ -43,8 +43,8 @@ class CarControllerParams:
     # By using these values, you accept all risks and responsibility.
     # ============================================================================
     
-    self.STEER_DELTA_UP = 5      # Increased from 3 - more aggressive ramp up
-    self.STEER_DELTA_DOWN = 8    # Increased from 7 - faster unwind
+    self.STEER_DELTA_UP = 3      # Conservative default rate
+    self.STEER_DELTA_DOWN = 7    # Conservative default rate
     self.STEER_DRIVER_ALLOWANCE = 50
     self.STEER_DRIVER_MULTIPLIER = 2
     self.STEER_DRIVER_FACTOR = 1
@@ -59,6 +59,8 @@ class CarControllerParams:
       self.STEER_THRESHOLD = 350
     elif CP.carFingerprint in CANFD_CAR:
       self.STEER_MAX = 409         # Increased from 270 - aggressive mode
+      self.STEER_DELTA_UP = 2      # Conservative rate for CANFD
+      self.STEER_DELTA_DOWN = 3    # Conservative rate for CANFD
       self.STEER_DRIVER_ALLOWANCE = 250
       self.STEER_DRIVER_MULTIPLIER = 2
       self.STEER_THRESHOLD = 250
@@ -74,6 +76,8 @@ class CarControllerParams:
     # Apply 409 to ALT_LIMITS vehicles as well
     elif CP.flags & HyundaiFlags.ALT_LIMITS:
       self.STEER_MAX = 409         # Increased from 270 - aggressive mode
+      self.STEER_DELTA_UP = 2      # Conservative rate for ALT_LIMITS
+      self.STEER_DELTA_DOWN = 3    # Conservative rate for ALT_LIMITS
 
     # Default for most HKG - aggressive 409
     else:
