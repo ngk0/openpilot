@@ -39,7 +39,7 @@ class CarControllerParams:
 
     # Apply 409 max torque to CANFD vehicles
     if CP.carFingerprint in CANFD_CAR and frogpilot_toggles and frogpilot_toggles.taco_tune_hacks:
-      self.STEER_MAX = 409 if vEgoRaw < 11. else 409  # Maximum EPS capability
+      self.STEER_MAX = 409  # Maximum EPS capability
       self.STEER_DRIVER_ALLOWANCE = 350
       self.STEER_DRIVER_MULTIPLIER = 2
       self.STEER_THRESHOLD = 350
