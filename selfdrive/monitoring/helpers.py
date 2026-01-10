@@ -21,34 +21,34 @@ class DRIVER_MONITOR_SETTINGS:
   def __init__(self):
     self._DT_DMON = DT_DMON
     # ref (page15-16): https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:42018X1947&rid=2
-    # NOTE: Thresholds reduced 50% (values increased) and timings extended
-    self._AWARENESS_TIME = 60. # passive wheeltouch total timeout (was 30)
-    self._AWARENESS_PRE_TIME_TILL_TERMINAL = 30.
-    self._AWARENESS_PROMPT_TIME_TILL_TERMINAL = 12.
-    self._DISTRACTED_TIME = 30. # active monitoring total timeout (was 11)
-    self._DISTRACTED_PRE_TIME_TILL_TERMINAL = 22.
-    self._DISTRACTED_PROMPT_TIME_TILL_TERMINAL = 15.
+    # NOTE: Thresholds reduced 75% total (values increased) and timings extended 4x
+    self._AWARENESS_TIME = 120. # passive wheeltouch total timeout (was 30, then 60)
+    self._AWARENESS_PRE_TIME_TILL_TERMINAL = 60.
+    self._AWARENESS_PROMPT_TIME_TILL_TERMINAL = 24.
+    self._DISTRACTED_TIME = 60. # active monitoring total timeout (was 11, then 30)
+    self._DISTRACTED_PRE_TIME_TILL_TERMINAL = 44.
+    self._DISTRACTED_PROMPT_TIME_TILL_TERMINAL = 30.
 
-    self._FACE_THRESHOLD = 0.5  # was 0.7, reduced to detect face more easily
-    self._EYE_THRESHOLD = 0.45  # was 0.65, reduced to detect eyes more easily
+    self._FACE_THRESHOLD = 0.25  # was 0.7, then 0.5, reduced 75% total to detect face more easily
+    self._EYE_THRESHOLD = 0.225  # was 0.65, then 0.45, reduced 75% total to detect eyes more easily
     self._SG_THRESHOLD = 0.9
     self._BLINK_THRESHOLD = 1.0  # was 0.865, increased 50% (capped at 1.0) - harder to trigger blink distraction
 
-    self._EE_THRESH11 = 0.375  # was 0.25, increased 50%
-    self._EE_THRESH12 = 11.25  # was 7.5, increased 50%
-    self._EE_MAX_OFFSET1 = 0.09  # was 0.06, increased 50%
-    self._EE_MIN_OFFSET1 = 0.0375  # was 0.025, increased 50%
-    self._EE_THRESH21 = 0.015  # was 0.01, increased 50%
-    self._EE_THRESH22 = 0.525  # was 0.35, increased 50%
+    self._EE_THRESH11 = 0.5625  # was 0.25, then 0.375, increased 125% total
+    self._EE_THRESH12 = 16.875  # was 7.5, then 11.25, increased 125% total
+    self._EE_MAX_OFFSET1 = 0.135  # was 0.06, then 0.09, increased 125% total
+    self._EE_MIN_OFFSET1 = 0.05625  # was 0.025, then 0.0375, increased 125% total
+    self._EE_THRESH21 = 0.0225  # was 0.01, then 0.015, increased 125% total
+    self._EE_THRESH22 = 0.7875  # was 0.35, then 0.525, increased 125% total
 
-    self._POSE_PITCH_THRESHOLD = 0.47  # was 0.3133, increased 50% - can look down more
-    self._POSE_PITCH_THRESHOLD_SLACK = 0.486  # was 0.3237, increased 50%
+    self._POSE_PITCH_THRESHOLD = 0.705  # was 0.3133, then 0.47, increased 125% total - can look down more
+    self._POSE_PITCH_THRESHOLD_SLACK = 0.729  # was 0.3237, then 0.486, increased 125% total
     self._POSE_PITCH_THRESHOLD_STRICT = self._POSE_PITCH_THRESHOLD
-    self._POSE_YAW_THRESHOLD = 0.603  # was 0.4020, increased 50% - can look left/right more
-    self._POSE_YAW_THRESHOLD_SLACK = 0.756  # was 0.5042, increased 50%
+    self._POSE_YAW_THRESHOLD = 0.9045  # was 0.4020, then 0.603, increased 125% total - can look left/right more
+    self._POSE_YAW_THRESHOLD_SLACK = 1.134  # was 0.5042, then 0.756, increased 125% total
     self._POSE_YAW_THRESHOLD_STRICT = self._POSE_YAW_THRESHOLD
     self._PITCH_NATURAL_OFFSET = 0.029 # initial value before offset is learned
-    self._PITCH_NATURAL_THRESHOLD = 0.674  # was 0.449, increased 50%
+    self._PITCH_NATURAL_THRESHOLD = 1.011  # was 0.449, then 0.674, increased 125% total
     self._YAW_NATURAL_OFFSET = 0.097 # initial value before offset is learned
     self._PITCH_MAX_OFFSET = 0.124
     self._PITCH_MIN_OFFSET = -0.0881
