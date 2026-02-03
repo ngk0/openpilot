@@ -324,17 +324,9 @@ class DriverMonitoring:
     awareness_prev = self.awareness
 
     if (driver_attentive and self.face_detected and self.pose.low_std and self.awareness > 0):
-      if driver_engaged:
-        self._reset_awareness()
-        return
-      # only restore awareness when paying attention and alert is not red
-      self.awareness = min(self.awareness + ((self.settings._RECOVERY_FACTOR_MAX-self.settings._RECOVERY_FACTOR_MIN)*
-                                             (1.-self.awareness)+self.settings._RECOVERY_FACTOR_MIN)*self.step_change, 1.)
-      if self.awareness == 1.:
-        self.awareness_passive = min(self.awareness_passive + self.step_change, 1.)
-      # don't display alert banner when awareness is recovering and has cleared orange
-      if self.awareness > self.threshold_prompt:
-        return
+      # Always reset awareness immediately when driver is attentive
+      self._reset_awareness()
+      return
 
     _reaching_audible = self.awareness - self.step_change <= self.threshold_prompt
     _reaching_terminal = self.awareness - self.step_change <= 0
