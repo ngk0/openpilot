@@ -17,8 +17,8 @@ class CarControllerParams:
   ACCEL_MAX = 2.0 # m/s
 
   def __init__(self, CP, vEgoRaw=100., frogpilot_toggles=None):
-    self.STEER_DELTA_UP = 6
-    self.STEER_DELTA_DOWN = 10
+    self.STEER_DELTA_UP = 3
+    self.STEER_DELTA_DOWN = 7
     self.STEER_DRIVER_ALLOWANCE = 50
     self.STEER_DRIVER_MULTIPLIER = 2
     self.STEER_DRIVER_FACTOR = 1
@@ -26,19 +26,19 @@ class CarControllerParams:
     self.STEER_STEP = 1  # 100 Hz
 
     if CP.carFingerprint in CANFD_CAR and frogpilot_toggles and frogpilot_toggles.taco_tune_hacks:
-      self.STEER_MAX = 409
+      self.STEER_MAX = 384 if vEgoRaw < 11. else 330
       self.STEER_DRIVER_ALLOWANCE = 350
       self.STEER_DRIVER_MULTIPLIER = 2
       self.STEER_THRESHOLD = 350
-      self.STEER_DELTA_UP = 12 if vEgoRaw < 11. else 6
-      self.STEER_DELTA_DOWN = 12 if vEgoRaw < 11. else 10
+      self.STEER_DELTA_UP = 10 if vEgoRaw < 11. else 2
+      self.STEER_DELTA_DOWN = 10 if vEgoRaw < 11. else 3
     elif CP.carFingerprint in CANFD_CAR:
-      self.STEER_MAX = 409
+      self.STEER_MAX = 270
       self.STEER_DRIVER_ALLOWANCE = 250
       self.STEER_DRIVER_MULTIPLIER = 2
       self.STEER_THRESHOLD = 250
-      self.STEER_DELTA_UP = 6
-      self.STEER_DELTA_DOWN = 10
+      self.STEER_DELTA_UP = 2
+      self.STEER_DELTA_DOWN = 3
 
     # To determine the limit for your car, find the maximum value that the stock LKAS will request.
     # If the max stock LKAS request is <384, add your car to this list.
@@ -49,13 +49,13 @@ class CarControllerParams:
 
     # these cars have significantly more torque than most HKG; limit to 70% of max
     elif CP.flags & HyundaiFlags.ALT_LIMITS:
-      self.STEER_MAX = 409
-      self.STEER_DELTA_UP = 6
-      self.STEER_DELTA_DOWN = 10
+      self.STEER_MAX = 270
+      self.STEER_DELTA_UP = 2
+      self.STEER_DELTA_DOWN = 3
 
     # Default for most HKG
     else:
-      self.STEER_MAX = 409
+      self.STEER_MAX = 384
 
 
 class HyundaiFlags(IntFlag):
