@@ -21,30 +21,30 @@ class DRIVER_MONITOR_SETTINGS:
   def __init__(self):
     self._DT_DMON = DT_DMON
     # ref (page15-16): https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:42018X1947&rid=2
-    self._AWARENESS_TIME = 30. # passive wheeltouch total timeout
-    self._AWARENESS_PRE_TIME_TILL_TERMINAL = 15.
-    self._AWARENESS_PROMPT_TIME_TILL_TERMINAL = 6.
-    self._DISTRACTED_TIME = 11. # active monitoring total timeout
-    self._DISTRACTED_PRE_TIME_TILL_TERMINAL = 8.
-    self._DISTRACTED_PROMPT_TIME_TILL_TERMINAL = 6.
+    self._AWARENESS_TIME = 600. # passive wheeltouch total timeout (effectively disabled)
+    self._AWARENESS_PRE_TIME_TILL_TERMINAL = 300.
+    self._AWARENESS_PROMPT_TIME_TILL_TERMINAL = 120.
+    self._DISTRACTED_TIME = 600. # active monitoring total timeout (effectively disabled)
+    self._DISTRACTED_PRE_TIME_TILL_TERMINAL = 300.
+    self._DISTRACTED_PROMPT_TIME_TILL_TERMINAL = 120.
 
-    self._FACE_THRESHOLD = 0.7
-    self._EYE_THRESHOLD = 0.65
-    self._SG_THRESHOLD = 0.9
-    self._BLINK_THRESHOLD = 0.865
+    self._FACE_THRESHOLD = 0.1
+    self._EYE_THRESHOLD = 0.1
+    self._SG_THRESHOLD = 0.99
+    self._BLINK_THRESHOLD = 10.0  # effectively disables blink distraction
 
-    self._EE_THRESH11 = 0.25
-    self._EE_THRESH12 = 7.5
-    self._EE_MAX_OFFSET1 = 0.06
-    self._EE_MIN_OFFSET1 = 0.025
-    self._EE_THRESH21 = 0.01
-    self._EE_THRESH22 = 0.35
+    self._EE_THRESH11 = 10.0
+    self._EE_THRESH12 = 100.0
+    self._EE_MAX_OFFSET1 = 10.0
+    self._EE_MIN_OFFSET1 = 10.0
+    self._EE_THRESH21 = 10.0
+    self._EE_THRESH22 = 10.0
 
-    self._POSE_PITCH_THRESHOLD = 0.3133
-    self._POSE_PITCH_THRESHOLD_SLACK = 0.3237
+    self._POSE_PITCH_THRESHOLD = 1.5
+    self._POSE_PITCH_THRESHOLD_SLACK = 1.5
     self._POSE_PITCH_THRESHOLD_STRICT = self._POSE_PITCH_THRESHOLD
-    self._POSE_YAW_THRESHOLD = 0.4020
-    self._POSE_YAW_THRESHOLD_SLACK = 0.5042
+    self._POSE_YAW_THRESHOLD = 1.5
+    self._POSE_YAW_THRESHOLD_SLACK = 1.5
     self._POSE_YAW_THRESHOLD_STRICT = self._POSE_YAW_THRESHOLD
     self._PITCH_NATURAL_OFFSET = 0.029 # initial value before offset is learned
     self._PITCH_NATURAL_THRESHOLD = 0.449
@@ -67,8 +67,8 @@ class DRIVER_MONITOR_SETTINGS:
     self._WHEELPOS_THRESHOLD = 0.5
     self._WHEELPOS_FILTER_MIN_COUNT = int(15 / self._DT_DMON) # allow 15 seconds to converge wheel side
 
-    self._RECOVERY_FACTOR_MAX = 5.  # relative to minus step change
-    self._RECOVERY_FACTOR_MIN = 1.25  # relative to minus step change
+    self._RECOVERY_FACTOR_MAX = 1000.  # instant recovery
+    self._RECOVERY_FACTOR_MIN = 1000.  # instant recovery
 
     self._MAX_TERMINAL_ALERTS = 3  # not allowed to engage after 3 terminal alerts
     self._MAX_TERMINAL_DURATION = int(30 / self._DT_DMON)  # not allowed to engage after 30s of terminal alerts
@@ -322,18 +322,9 @@ class DriverMonitoring:
     driver_attentive = self.driver_distraction_filter.x < 0.37
     awareness_prev = self.awareness
 
-    if (driver_attentive and self.face_detected and self.pose.low_std and self.awareness > 0):
-      if driver_engaged:
-        self._reset_awareness()
-        return
-      # only restore awareness when paying attention and alert is not red
-      self.awareness = min(self.awareness + ((self.settings._RECOVERY_FACTOR_MAX-self.settings._RECOVERY_FACTOR_MIN)*
-                                             (1.-self.awareness)+self.settings._RECOVERY_FACTOR_MIN)*self.step_change, 1.)
-      if self.awareness == 1.:
-        self.awareness_passive = min(self.awareness_passive + self.step_change, 1.)
-      # don't display alert banner when awareness is recovering and has cleared orange
-      if self.awareness > self.threshold_prompt:
-        return
+    if (driver_attentive and self.face_detected and self.awareness > 0):
+      self._reset_awareness()
+      return
 
     _reaching_audible = self.awareness - self.step_change <= self.threshold_prompt
     _reaching_terminal = self.awareness - self.step_change <= 0
