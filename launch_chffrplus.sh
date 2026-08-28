@@ -73,6 +73,9 @@ function launch {
   # handle pythonpath
   ln -sfn $(pwd) /data/pythonpath
   export PYTHONPATH="$DIR/frogpilot/third_party:$PWD"
+  # Nate garage button state poller (Home Assistant read)
+  [ -f /data/garage/garage_poll.py ] && setsid /usr/local/pyenv/versions/3.11.4/bin/python3 /data/garage/garage_poll.py </dev/null >/dev/null 2>&1 &
+
 
   # hardware specific init
   if [ -f /AGNOS ]; then
