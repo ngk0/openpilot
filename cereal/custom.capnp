@@ -1,8 +1,6 @@
 using Cxx = import "./include/c++.capnp";
 $Cxx.namespace("cereal");
 
-using Car = import "car.capnp";
-
 @0xb526ba661d550a59;
 
 # custom.capnp: a home for empty structs reserved for custom forks
@@ -126,8 +124,9 @@ struct FrogPilotCarState @0xda96579883444c35 {
   isParked @11 :Bool;
   pauseLateral @12 :Bool;
   pauseLongitudinal @13 :Bool;
-  sportGear @14 :Bool;
-  trafficModeEnabled @15 :Bool;
+  pedalInterceptorNoBrake @14 :Bool;
+  sportGear @15 :Bool;
+  trafficModeEnabled @16 :Bool;
 
   struct ButtonEvent {
     enum Type {
@@ -143,7 +142,7 @@ struct FrogPilotControlsState @0x80ae746ee2596b11 {
   alertSize @3 :AlertSize;
   alertBlinkingRate @4 :Float32;
   alertType @5 :Text;
-  alertSound @6 :Car.CarControl.HUDControl.AudibleAlert;
+  alertSound @6 :FrogPilotCarControl.HUDControl.AudibleAlert;
 
   enum AlertSize {
     none @0;    # don't display the alert
@@ -185,40 +184,42 @@ struct FrogPilotPlan @0xa1680744031fdb2d {
   accelerationJerk @0 :Float32;
   accelerationJerkStock @1 :Float32;
   cscControllingSpeed @2 :Bool;
-  cscSpeed @3 :Float32;
-  cscTraining @4 :Bool;
-  dangerJerk @5 :Float32;
-  desiredFollowDistance @6 :Int64;
-  experimentalMode @7 :Bool;
-  forcingStop @8 :Bool;
-  forcingStopLength @9 :Float32;
-  frogpilotEvents @10 :List(FrogPilotCarEvent);
-  increasedStoppedDistance @11 :Float32;
-  lateralCheck @12 :Bool;
+  cscMaxLateralAcceleration @3 :Float32;
+  cscSpeed @4 :Float32;
+  cscTraining @5 :Bool;
+  dangerJerk @6 :Float32;
+  desiredFollowDistance @7 :Int64;
+  experimentalMode @8 :Bool;
+  forcingStop @9 :Bool;
+  forcingStopLength @10 :Float32;
+  frogpilotEvents @11 :List(FrogPilotCarEvent);
+  increasedStoppedDistance @12 :Float32;
   laneWidthLeft @13 :Float32;
   laneWidthRight @14 :Float32;
-  maxAcceleration @15 :Float32;
-  minAcceleration @16 :Float32;
-  redLight @17 :Bool;
-  roadCurvature @18 :Float32;
-  slcMapSpeedLimit @19 :Float32;
-  slcMapboxSpeedLimit @20 :Float32;
-  slcNextSpeedLimit @21 :Float32;
-  slcOverriddenSpeed @22 :Float32;
-  slcSpeedLimit @23 :Float32;
-  slcSpeedLimitOffset @24 :Float32;
-  slcSpeedLimitSource @25 :Text;
-  speedJerk @26 :Float32;
-  speedJerkStock @27 :Float32;
-  speedLimitChanged @28 :Bool;
-  tFollow @29 :Float32;
-  themeUpdated @30 :Bool;
-  togglesUpdated @31 :Bool;
-  trackingLead @32 :Bool;
-  unconfirmedSlcSpeedLimit @33 :Float32;
-  vCruise @34 :Float32;
-  weatherDaytime @35 :Bool;
-  weatherId @36 :Int16;
+  lateralCheck @15 :Bool;
+  maxAcceleration @16 :Float32;
+  minAcceleration @17 :Float32;
+  redLight @18 :Bool;
+  roadCurvature @19 :Float32;
+  slcMapSpeedLimit @20 :Float32;
+  slcMapboxSpeedLimit @21 :Float32;
+  slcMapboxWayId @22 :Int64;
+  slcNextSpeedLimit @23 :Float32;
+  slcOverriddenSpeed @24 :Float32;
+  slcSpeedLimit @25 :Float32;
+  slcSpeedLimitOffset @26 :Float32;
+  slcSpeedLimitSource @27 :Text;
+  speedJerk @28 :Float32;
+  speedJerkStock @29 :Float32;
+  speedLimitChanged @30 :Bool;
+  tFollow @31 :Float32;
+  themeUpdated @32 :Bool;
+  togglesUpdated @33 :Bool;
+  trackingLead @34 :Bool;
+  unconfirmedSlcSpeedLimit @35 :Float32;
+  vCruise @36 :Float32;
+  weatherDaytime @37 :Bool;
+  weatherId @38 :Int16;
 }
 
 struct FrogPilotRadarState @0xcb9fd56c7057593a {
