@@ -1,7 +1,11 @@
 #include "frogpilot/ui/screenrecorder/screenrecorder.h"
 
 #include <cmath>
+#include <utility>
 
+#include <QOpenGLWidget>
+
+#include "common/swaglog.h"
 #include "common/timing.h"
 #include "selfdrive/ui/qt/util.h"
 
@@ -29,45 +33,86 @@ ScreenRecorder::~ScreenRecorder() {
 }
 
 void ScreenRecorder::updateState() {
+  if (stopping) {
+    if (engine->stop_complete()) {
+      stopping = false;
+      emit recordingStateChanged(false);
+    }
+    return;
+  }
+
   if (!recording) {
     return;
   }
 
   if (!engine->is_recording()) {
-    engine->stop();
+    if (auto *camera = qobject_cast<QOpenGLWidget *>(parentWidget())) {
+      camera->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
+    }
+    engine->request_stop();
 
     recording = false;
+    stopping = !engine->stop_complete();
 
     update();
+
+    if (!stopping) {
+      emit recordingStateChanged(false);
+    }
 
     return;
   }
 
-  if (frameCount++ % 2 == 0) {
-    engine->submit_frame(rootWidget->grab().toImage(), nanos_since_boot());
+  if (frameCount++ % 2 == 0 && engine->can_accept_frame()) {
+    QImage frame = rootWidget->grab().toImage();
+    if (frame.isNull()) {
+      LOGE("screenrecorder: failed to capture the UI");
+      stopRecording();
+      return;
+    }
+    engine->submit_frame(std::move(frame), nanos_since_boot());
   }
 }
 
 void ScreenRecorder::toggleRecording() {
-  recording ? stopRecording() : startRecording();
-}
-
-void ScreenRecorder::startRecording() {
-  if (recording) {
+  if (stopping) {
     return;
   }
 
+  if (recording) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+bool ScreenRecorder::startRecording() {
+  if (recording) {
+    return true;
+  }
+  if (stopping) {
+    return false;
+  }
+
   if (!engine->start()) {
-    return;
+    return false;
+  }
+
+  if (auto *camera = qobject_cast<QOpenGLWidget *>(parentWidget())) {
+    camera->setUpdateBehavior(QOpenGLWidget::PartialUpdate);
   }
 
   recording = true;
 
-  frameCount = 0;
+  frameCount = 1;
 
   startedTime = QDateTime::currentMSecsSinceEpoch();
 
   update();
+
+  emit recordingStateChanged(true);
+
+  return true;
 }
 
 void ScreenRecorder::stopRecording() {
@@ -76,8 +121,12 @@ void ScreenRecorder::stopRecording() {
   }
 
   recording = false;
+  stopping = true;
 
-  engine->stop();
+  if (auto *camera = qobject_cast<QOpenGLWidget *>(parentWidget())) {
+    camera->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
+  }
+  engine->request_stop();
 
   update();
 }

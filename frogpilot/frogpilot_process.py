@@ -31,7 +31,7 @@ def assets_checks(model_manager, theme_manager, frogpilot_toggles):
 
   report_data = json.loads(params_memory.get("IssueReported", encoding="utf-8") or "{}")
   if report_data:
-    capture_report(report_data["DiscordUser"], report_data["Issue"], vars(frogpilot_toggles))
+    run_thread_with_lock("capture_report", capture_report, (report_data["DiscordUser"], report_data["Issue"], dict(vars(frogpilot_toggles))))
     params_memory.remove("IssueReported")
 
   for asset_type, asset_param in THEME_COMPONENT_PARAMS.items():
@@ -72,7 +72,7 @@ def frogpilot_thread():
 
   pm = messaging.PubMaster(["frogpilotPlan"])
   sm = messaging.SubMaster(["carControl", "carState", "controlsState", "deviceState", "driverMonitoringState",
-                            "liveLocationKalman", "liveParameters", "managerState", "modelV2", "onroadEvents",
+                            "liveLocationKalman", "liveParameters", "liveTorqueParameters", "managerState", "modelV2", "onroadEvents",
                             "pandaStates", "radarState", "frogpilotCarState", "frogpilotControlsState",
                             "frogpilotModelV2", "frogpilotNavigation", "frogpilotOnroadEvents"],
                             poll="modelV2", ignore_avg_freq=["frogpilotRadarState"])
@@ -92,6 +92,8 @@ def frogpilot_thread():
     if not started and started_previously:
       run_update_checks = True
 
+      frogpilot_planner.frogpilot_vcruise.slc.close()
+
       frogpilot_variables.update(theme_manager.holiday_theme, started)
       frogpilot_toggles = get_frogpilot_toggles()
 
@@ -102,7 +104,7 @@ def frogpilot_thread():
         theme_manager.update_active_theme(time_validated, frogpilot_toggles, randomize_theme=True)
 
       if time_validated:
-        send_stats(json.loads(params.get("LastGPSPosition") or "{}"), params, frogpilot_toggles)
+        run_thread_with_lock("send_stats", send_stats, (params, frogpilot_toggles))
 
     elif started and not started_previously:
       if error_log.is_file():
