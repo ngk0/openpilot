@@ -37,6 +37,10 @@ void hyundai_common_init(uint16_t param) {
   hyundai_alt_limits = GET_FLAG(param, HYUNDAI_PARAM_ALT_LIMITS);
 
   hyundai_last_button_interaction = HYUNDAI_PREV_BUTTON_SAMPLES;
+  // always-on-lateral: start the cruise-main latch ON so lateral is armed from boot
+  // without a MAIN press. openpilot's matching latch is patched to start on too, so the
+  // two stay in sync and MAIN still toggles the feature off and back on.
+  acc_main_on = true;
 
 #ifdef ALLOW_DEBUG
   hyundai_longitudinal = GET_FLAG(param, HYUNDAI_PARAM_LONGITUDINAL);
