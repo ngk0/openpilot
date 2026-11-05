@@ -80,7 +80,7 @@ class CarState(CarStateBase):
     self.lkas_pressed = False
     self.lkas_previously_enabled = False
     self.lkas_release_pending = False
-    self.main_enabled = False
+    self.main_enabled = True
 
     self.drive_mode = 0
 
@@ -347,7 +347,7 @@ class CarState(CarStateBase):
   # FrogPilot variables
   def update_main_button(self, main_samples):
     if not self.car_safety_mode_set:
-      self.main_enabled = False
+      self.main_enabled = True
       return
 
     main_pressed = self.prev_main_buttons != 0
